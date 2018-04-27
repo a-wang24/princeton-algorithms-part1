@@ -1,0 +1,118 @@
+/**
+ * 
+ * @author Alan
+ * 04/12/2018
+ * Percolation class - Week 1 programming assignment Princeton Algorithms Part 1
+ */
+
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+//import java.lang.IllegalArgumentException;
+
+/** Model of a percolation system */
+public class Percolation {
+
+  /** Class that implements weighted quick union algorithms from algs4 */
+  private final WeightedQuickUnionUF wquf, noBackwash;
+  
+  /** array representing if site in grid is open or not */
+  private boolean[] open;
+  //private boolean[] full;
+  
+  /** side length of grid = n */
+  private final int side;
+  
+  /** represents indices of "virtual" top and bottom node for simplified percolation test */
+  private final int topVirt, botVirt;
+  
+  /** Constructor - creates nxn grid with all sites blocked */
+  public Percolation(int n) {
+     if (n < 0) {
+         throw new java.lang.IllegalArgumentException("n must be greater than 0");
+     }
+     
+     side = n;
+     topVirt = n*n;
+     botVirt = n*n + 1;
+     wquf = new WeightedQuickUnionUF(n*n + 2);
+     noBackwash = new WeightedQuickUnionUF(n*n + 1);
+     open = new boolean[n*n];
+     //full = new boolean[n*n];
+  }
+  
+  /** open the specified row and col to access */
+  public void open(int row, int col) {
+	  validateInputs(row,col);
+	  int index = (row-1)*side + (col-1);
+	  open[index] = true;
+	  
+	  if (row == 1) {
+		  wquf.union(index, topVirt);
+		  noBackwash.union(index, topVirt);
+	  } 
+	  if (row == side) {
+		  wquf.union(index, botVirt);
+	  } 
+	  if (col > 1 && isOpen(row, col-1)) {
+		  wquf.union(index, index-1);
+		  noBackwash.union(index, index-1);
+	  } 
+	  if (col < side && isOpen(row, col+1)) {
+		  wquf.union(index, index+1);
+		  noBackwash.union(index, index+1);
+	  }
+	  if (row > 1 && isOpen(row-1, col)) {
+		  wquf.union(index, index-side);
+		  noBackwash.union(index, index-side);
+	  }
+	  if (row < side && isOpen(row+1, col)) {
+		  wquf.union(index,  index+side);
+		  noBackwash.union(index, index+side);
+	  }
+	  //full[index] = wquf.find(index) == wquf.find(topVirt);
+  }
+  
+  /** return whether or not specified row and col is open */
+  public boolean isOpen(int row, int col) {
+	  validateInputs(row,col);
+      return open[(row-1)*side + (col-1)];
+  }
+  
+  /** return whether or not specified row and col is open */
+  public boolean isFull(int row, int col) {
+      validateInputs(row,col);
+//      if (full[(row-1)*side + (col-1)]) {
+//    	  return wquf.connected((row-1)*side + (col-1), topVirt);
+//      }
+//      return false;
+      int temp = wquf.find((row-1)*side + (col-1));
+      return wquf.connected(temp, topVirt);
+  }
+  
+  /** return total number of open sites */
+  public int numberOfOpenSites() {
+	  int count = 0;
+	  for (int i=0; i<(side*side); i++) {
+		  count += (open[i] ? 1 : 0);
+	  }
+	  return count;
+  }
+  
+  //** does the system percolate */
+  public boolean percolates() {
+	  return wquf.connected(botVirt, topVirt);
+  }
+  
+  /** throws exception if row or column inputs are out of bounds */
+  private void validateInputs(int row, int col) {
+	  if (row > side || row < 1) {
+    	  throw new java.lang.IllegalArgumentException("row outside range");
+      } else if (col > side || col < 1 ) {
+    	  throw new java.lang.IllegalArgumentException("column outside range");
+      } 
+  }
+  
+  /** optional test client */
+  public static void main(String[] args) {
+	  //test client (optional)
+  }
+}

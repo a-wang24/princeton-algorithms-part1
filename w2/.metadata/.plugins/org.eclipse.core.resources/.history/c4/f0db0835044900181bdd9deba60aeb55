@@ -1,0 +1,54 @@
+import java.util.Iterator;
+import java.lang.IllegalArgumentException;
+import java.util.NoSuchElementException;
+import java.lang.UnsupportedOperationException;
+
+public class Deque<Item> implements Iterable<Item> {
+	//* size of stack *//
+	private int n;
+	
+	//* front of stack *//
+	private Node first;
+	
+	//* end of stack *//
+	private Node last;
+	
+	//* helper linked list class *//
+	private class Node {
+		private Item item;
+		private Node next;
+	}
+	
+	//* constructor for empty deque *//
+	public Deque() {}
+	
+	//* check if deque is empty *//
+	public boolean isEmpty() {}
+	f
+	//* return number of items in deque *//
+	public int size() {}
+	
+	//* add item to the front *//
+	public void addFirst(Item item) {
+		if (item )
+	}
+	
+	//* add item to the end *//
+	public void addLast(Item item) {}
+	
+	//* remove and return item from the front *//
+	public Item removeFirst() {}
+	
+	//* remove and return item from the end *//
+	public Item removeLast() {}
+	
+	//* return an iterator over items in order from front to end *//
+	public Iterator<Item> iterator() {}
+	
+	//* Unit Testing *//
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
