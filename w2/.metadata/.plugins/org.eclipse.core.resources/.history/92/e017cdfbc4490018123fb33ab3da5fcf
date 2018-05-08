@@ -1,0 +1,16 @@
+/**
+ * @author Alan
+ * 
+ * Coursera: Princeton Algorithms and Data Structures 1
+ * Randomized Queues and Deques
+ * 
+ */
+
+public class Permutation {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

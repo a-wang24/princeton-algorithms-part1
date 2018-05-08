@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.lang.IllegalArgumentException;
 import java.util.NoSuchElementException;
 import java.lang.UnsupportedOperationException;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
 	//* size of queue *//
@@ -17,6 +18,33 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	
 	//* queue *//
 	private Item[] q;
+	
+	//* Iterator helper class *//
+	private class RandomizedQueueIterator implements Iterator<Item> {
+		private int size = n;
+		private int[] order;
+		
+		public RandomizedQueueIterator() {
+			order = new int[size];
+			for (int k = 0; k < size; k++) {
+				order[k] = k;
+			}
+			StdRandom.shuffle(order);
+		}
+		
+		public boolean hasNext() {
+			return size > 0;
+		}
+		
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+		
+		public Item next() {
+			if (!hasNext()) throw new NoSuchElementException();
+			return q[order[--size]];
+		}
+	}
 	
 	//* construct empty randomized queue *//
 	public RandomizedQueue() {
@@ -26,37 +54,64 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	
 	//* return if randomized queue is empty *//
 	public boolean isEmpty() {
-		
+		return n == 0;
 	}
 	
 	//* return number of items in randomized queue *//
 	public int size() {
-		
+		return n;
 	}
 	
+	private void resize(int capacity) {
+		Item[] copy = (Item[]) new Object[capacity];
+		for (int i = 0; i < n; i++) {
+			copy[i] = q[i];
+		}
+		q = copy;
+	}
 	//* add an item *//
 	public void enqueue(Item item) {
-		
+		if (item == null) throw new IllegalArgumentException();
+		if (n == q.length) resize(2 * q.length);
+		q[n++] = item;
 	}
 	
 	//* remove and return a random item *//
 	public Item dequeue() {
-		
+		if (isEmpty()) throw new NoSuchElementException();
+		int ind = StdRandom.uniform(n);
+		Item item = q[ind];
+		q[ind] = q[n-1];
+		q[--n] = null;
+		if (n > 0 && n == q.length/4) resize(q.length/2);
+		return item;
 	}
 	
 	//* return random item but don't remove it *//
 	public Item sample() {
-		
+		if (isEmpty()) throw new NoSuchElementException();
+		int ind = StdRandom.uniform(n);
+		return q[ind];
 	}
 	
 	//* return iterator over items in random order *//
 	public Iterator<Item> iterator() {
-		
+		return new RandomizedQueueIterator();
 	}
 	
 	//* unit testing *//
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		RandomizedQueue<Integer> rq = new RandomizedQueue<Integer>();
+		
+		for (int i = 0; i < 10; i++) {
+			rq.enqueue(i);
+		}
+		
+		int size = rq.size();
+		
+		for (int i = 0; i < size; i++) {
+			System.out.println(rq.dequeue());
+		}
 
 	}
 
